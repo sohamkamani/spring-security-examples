@@ -8,10 +8,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sohamkamani</groupId>
-	<artifactId>{PROJECTDIR}</artifactId>
-	<url>http://github.com/sohamkamani/{PROJECTDIR}</url>
+	<artifactId>spring-security-examples</artifactId>
+	<url>http://github.com/sohamkamani/spring-security-examples</url>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>{PROJECTDIR}</name>
+	<name>spring-security-examples</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
@@ -20,6 +20,28 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<!-- used for jwtauth -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.security.oauth/spring-security-oauth2 -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-jose</artifactId>
+			<version>5.7.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-resource-server</artifactId>
+			<version>5.7.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>4.2.1</version>
 		</dependency>
 
 		<dependency>
@@ -34,6 +56,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.sohamkamani.jwtauth.Application</mainClass>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -36,3 +36,8 @@ GET http://localhost:8081/sample-error
 ###
 
 GET http://localhost:8081/extra
+
+###
+
+POST http://localhost:8081/login?error
+Authorization: Bearer sdsdc
