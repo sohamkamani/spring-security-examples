@@ -1,6 +1,6 @@
 # Spring Security Examples
 
-This is the example repo for my blog post on [Spring Security Examples](java/spring-security)
+This is the example repo for my blog posts on [Spring Security](https://www.sohamkamani.com/categories/spring-security/)
 
 There may be multiple examples in this project. Pick the example you want to run, and modify the `pom.xml` file to choose the main file. To do this, change the `mainClass` attribute in the Spring boot maven plugin.
 
