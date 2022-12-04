@@ -1,12 +1,9 @@
 package com.sohamkamani.jwtauth;
 
-import java.util.Arrays;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,14 +53,14 @@ public class JwtSecurityContextRepository implements SecurityContextRepository {
 
         // Create the UserDetails instance from the decoded JWT
         UserDetails userDetails = userDetailsService
-                .loadUserByUsername(decodedJWT.get().getClaim("username").asString());
+            .loadUserByUsername(decodedJWT.get().getClaim("username").asString());
 
         // Create the authentication token from userDetails and add it to the security context
         // This will now be available in all downstream spring filters (including the request
         // handlers)
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(userDetails, null,
-                        userDetails.getAuthorities());
+            new UsernamePasswordAuthenticationToken(userDetails, null,
+                userDetails.getAuthorities());
         context.setAuthentication(usernamePasswordAuthenticationToken);
         return context;
     }
@@ -71,7 +68,7 @@ public class JwtSecurityContextRepository implements SecurityContextRepository {
     // Since the user information is stored in the JWT itself, we can leave this method as a no-op
     @Override
     public void saveContext(SecurityContext context, HttpServletRequest request,
-            HttpServletResponse response) {}
+        HttpServletResponse response) {}
 
     // to override this method, we need to return a boolean value denoting
     // if the token exists in our request

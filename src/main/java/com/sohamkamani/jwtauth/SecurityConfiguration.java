@@ -14,8 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 /**
  * Defines the spring security configuration for our application via the `getSecurityFilterChain`
@@ -33,37 +31,42 @@ class SecurityConfiguration {
     @Bean
     @Autowired
     SecurityFilterChain getSecurityFilterChain(HttpSecurity httpSecurity,
-            JwtSecurityContextRepository jwtSecurityContextRepository) throws Exception {
+        JwtSecurityContextRepository jwtSecurityContextRepository) throws Exception {
 
         httpSecurity
-                // Disable CSRF (not required for this demo)
-                .csrf().disable()
-                // Configure stateless session management. For JWT based auth, all the user
-                // authentication info is self contained in the token itself, so we don't
-                // need to store any additional session information
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                // Configure the custom authentication strategy we defined earlier
-                .sessionAuthenticationStrategy(new JwtSessionAuthenticationStrategy())
-                .and()
-                .securityContext()
-                // Configure the context repository that was injected
-                .securityContextRepository(jwtSecurityContextRepository)
-                .and()
-                .authorizeHttpRequests().anyRequest().authenticated()
-                .and()
-                // Now when the user navigates to /login (default) they will
-                // be taken to a form login page, and be redirected to the "/welcome"
-                // route when successfully logged in
-                .formLogin()
-                .successForwardUrl("/welcome");
+            // Disable CSRF (not required for this demo)
+            .csrf().disable()
+            // Configure stateless session management. For JWT based auth, all the user
+            // authentication info is self contained in the token itself, so we don't
+            // need to store any additional session information
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            // Configure the custom authentication strategy we defined earlier
+            .sessionAuthenticationStrategy(new JwtSessionAuthenticationStrategy())
+            .and()
+            .securityContext()
+            // Configure the context repository that was injected
+            .securityContextRepository(jwtSecurityContextRepository)
+            .and()
+            .authorizeHttpRequests().anyRequest().authenticated()
+            .and()
+            // Now when the user navigates to /login (default) they will
+            // be taken to a form login page, and be redirected to the "/welcome"
+            // route when successfully logged in
+            .formLogin()
+            .successForwardUrl("/welcome")
+            .and()
+            // When the user logs out, remove the cookie that stored their
+            // JWT payload
+            .logout()
+            .deleteCookies(JwtUtils.COOKIE_NAME);
 
         return httpSecurity.build();
     }
 
     @Bean
     public AuthenticationEventPublisher authenticationEventPublisher(
-            ApplicationEventPublisher applicationEventPublisher) {
+        ApplicationEventPublisher applicationEventPublisher) {
         return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
     }
 
@@ -74,15 +77,18 @@ class SecurityConfiguration {
     public UserDetailsService userDetailsService() {
         // we Are going with to default password encoder or for this example
         // however, in production you should use something more robust, like a BCryptPasswordEncoder
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username("user1")
-                .password("password1")
-                .roles("USER")
-                .username("user2")
-                .password("password2")
-                .roles("USER")
-                .build();
+        UserDetails user1 = User.withDefaultPasswordEncoder()
+            .username("user1")
+            .password("password1")
+            .roles("USER")
+            .build();
 
-        return new InMemoryUserDetailsManager(user);
+        UserDetails user2 = User.withDefaultPasswordEncoder()
+            .username("user2")
+            .password("password2")
+            .roles("USER")
+            .build();
+
+        return new InMemoryUserDetailsManager(user1, user2);
     }
 }

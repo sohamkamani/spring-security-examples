@@ -8,7 +8,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 /**
@@ -19,23 +18,24 @@ public class JwtUtils {
     // Private key used to sign and verify the JWT
     private static final String SECRET_KEY = "my-secret-key";
     // Name of the cookie to set and retrieve
-    private static final String COOKIE_NAME = "token";
+    static final String COOKIE_NAME = "token";
     // Settings for the JWT configuration, like algorithm, verification method and expiry age
     // In most cases, we can use these settings as is
     private static final Algorithm JWT_ALGORITHM = Algorithm.HMAC256(SECRET_KEY);
     private static final JWTVerifier JWT_VERIFIER = JWT.require(JWT_ALGORITHM).build();
     private static final int MAX_AGE_SECONDS = 120;
+    private static final int MAX_REFRESH_WINDOW_SECONDS = 30;
 
 
     static Cookie generateCookie(String username) {
         // Create a new JWT token string, with the username embedded in the payload
         Instant now = Instant.now();
         String token = JWT.create()
-                .withIssuedAt(now)
-                .withExpiresAt(now.plusSeconds(MAX_AGE_SECONDS))
-                // A "claim" is a single payload value which we can set
-                .withClaim("username", username)
-                .sign(JWT_ALGORITHM);
+            .withIssuedAt(now)
+            .withExpiresAt(now.plusSeconds(MAX_AGE_SECONDS))
+            // A "claim" is a single payload value which we can set
+            .withClaim("username", username)
+            .sign(JWT_ALGORITHM);
 
         // Create a cookie with the value set as the token string
         Cookie jwtCookie = new Cookie(COOKIE_NAME, token);
@@ -72,4 +72,18 @@ public class JwtUtils {
             return Optional.empty();
         }
     }
+
+    // Gets the expiry timestamp from the request and returns true if it falls
+    // within the allowed window, which starts at a given time before expiry
+    // in this case, 30s
+    static boolean isRefreshable(HttpServletRequest request) {
+        Optional<String> token = getToken(request);
+        if (token.isEmpty()) {
+            return false;
+        }
+        Instant expiryTime = JWT.decode(token.get()).getExpiresAtAsInstant();
+        Instant canBeRefreshedAfter = expiryTime.minusSeconds(MAX_REFRESH_WINDOW_SECONDS);
+        return Instant.now().isAfter(canBeRefreshedAfter);
+    }
+
 }
