@@ -1,0 +1,16 @@
+POST http://localhost:8081/login 
+Content-Type: application/x-www-form-urlencoded
+
+username=user1&password=password1
+
+###
+
+GET  http://localhost:8081/welcome
+
+###
+
+GET http://localhost:8081/refresh
+
+###
+
+GET http://localhost:8081/logout
