@@ -48,7 +48,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>com.sohamkamani.oauth2.Application</mainClass>
+					<mainClass>${MAIN_CLASS}</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>

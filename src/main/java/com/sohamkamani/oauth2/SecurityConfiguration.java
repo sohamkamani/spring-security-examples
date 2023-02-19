@@ -55,11 +55,6 @@ class SecurityConfiguration {
         return httpSecurity.build();
     }
 
-    @Bean
-    public AuthenticationEventPublisher authenticationEventPublisher(
-        ApplicationEventPublisher applicationEventPublisher) {
-        return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
-    }
 
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
