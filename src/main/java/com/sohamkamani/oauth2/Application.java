@@ -25,6 +25,7 @@ public class Application {
 	@RequestMapping("/welcome")
 	public String simpleRequest(HttpServletResponse response) {
 		// Get the username of the currently logged in user
+		// this method is defined below
 		Optional<String> username = getUsernameFromSecurityContext();
 		if (username.isEmpty()) {
 			// if user information cannot be obtained, return
@@ -41,9 +42,9 @@ public class Application {
 		// and get the principal object from the context
 		SecurityContext context = SecurityContextHolder.getContext();
 		Object principal = context.getAuthentication().getPrincipal();
-		System.out.println(">>PRINCIPAL: " + principal.getClass());
+
 		// If the user is authenticated, the principal should be an
-		// instance of UserDetails
+		// instance of DefaultOAuth2User
 		if (!(principal instanceof DefaultOAuth2User)) {
 			// if not, return an empty value
 			return Optional.empty();
